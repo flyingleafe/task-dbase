@@ -1,7 +1,5 @@
 CC=gcc
 CFLAGS=--std=c11 -O2 -I./include
-HC=ghc
-HFLAGS=-O2
 
 SOURCEDIR=src
 BUILDDIR=build
@@ -12,19 +10,20 @@ OBJECTS=$(patsubst $(SOURCEDIR)/%.c,$(BUILDDIR)/%.o,$(SOURCES))
 
 
 .PHONY: all clean builddir
-all: builddir $(BUILDDIR)/$(EXECUTABLE)
+all: builddir $(BUILDDIR)/$(EXECUTABLE) link
 
 builddir:
 	mkdir -p $(BUILDDIR)
+
+link:
+	ln -sf $(BUILDDIR)/$(EXECUTABLE) $(EXECUTABLE)
 
 $(BUILDDIR)/$(EXECUTABLE): $(OBJECTS)
 	$(CC) $^ -o $@
 
 $(OBJECTS): $(BUILDDIR)/%.o : $(SOURCEDIR)/%.c
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
+	rm -f $(EXECUTABLE) randtest *.o *.hi
 	rm -f $(BUILDDIR)/*.o $(BUILDDIR)/$(EXECUTABLE)
-
-randtest:
-	$(HC) $(HFLAGS) randtest.hs -o randtest

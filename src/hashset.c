@@ -2,6 +2,9 @@
 #include "graph.h"
 #include "hash.h"
 #include "pcg_random.h"
+#include "flf_string.h"
+#include "time.h"
+#include "simple_hashset"
 
 struct hashset {
     uint32_t size;
@@ -12,15 +15,8 @@ struct hashset {
     graph *_g;
 };
 
-int new_hashset(hashset **hs, uint32_t num)
+int new_perfect_hashset(hashset *hs, uint32_t num, const char *txt, size_t len)
 {
-    hashset *hss = malloc(num * sizeof(string) + sizeof(hashset));
-    if (hss == NULL) {
-        return -1;
-    }
-    hss->size = num;
-    hss->table = hss + sizeof(hashset);
-
 
 }
 

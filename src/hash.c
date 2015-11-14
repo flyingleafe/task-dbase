@@ -3,23 +3,27 @@
 #define FNV_PRIME 16777619
 #define FNV_OFFSET 2166136261
 
+__attribute__((always_inline))
+inline uint32_t fnv_step(uint32_t hsh, uint32_t val)
+{
+    return (hsh ^ val) * FNV_PRIME;
+}
+
 uint32_t hash(const char *str, size_t len, uint32_t hsh)
 {
-    size_t oct_len = len >> 2;
-    char oct_rem = len & 3;
-    const uint32_t *ostr = str;
-    const uint32_t *oend = str + oct_len;
-    while (ostr < oend) {
-        hsh ^= *ostr;
-        hsh *= FNV_PRIME;
-        ostr++;
+    while (len >= 4) {
+        hsh = fnv_step(hsh, *(uint32_t *)str);
+        str += 4;
+        len -= 4;
     }
-    uint32_t last = *ostr;
-    // crop last (4 - oct_rem) bits with zeros
-    last &= ~(1 << ((4 - oct_rem) << 2) - 1);
-    hsh ^= last;
-    hsh *= (FNV_PRIME * (last & 1));
-    return hsh;
+    if (len & 2) {
+        hsh = fnv_step(hsh, *(uint16_t *)str);
+        str += 2;
+    }
+    if (len & 1) {
+        hsh = fnv_step(hsh, *str);
+    }
+    return hsh ^ (hsh >> 16);
 }
 
 uint32_t hash_default(const char *str, size_t len)

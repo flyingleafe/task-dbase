@@ -5,7 +5,7 @@
 
 #include "pcg_random.h"
 
-static pcg32_random_t pcg32_global = { 0x853c49e6748fea9bULL, 0xda3e39cb94b95bdbULL };
+static pcg32_state pcg32_global = { 0x853c49e6748fea9bULL, 0xda3e39cb94b95bdbULL };
 
 void pcg32_srandom_r(pcg32_state* rng, uint64_t initstate, uint64_t initseq)
 {
