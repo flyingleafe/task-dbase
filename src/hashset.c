@@ -4,7 +4,7 @@
 #include "pcg_random.h"
 #include "flf_string.h"
 #include "time.h"
-#include "simple_hashset"
+#include "simple_hashset.h"
 
 struct hashset {
     uint32_t size;
@@ -15,9 +15,9 @@ struct hashset {
     graph *_g;
 };
 
-int new_perfect_hashset(hashset *hs, uint32_t num, const char *txt, size_t len)
+int new_perfect_hashset(hashset *hs, uint32_t num, simple_hashset *set)
 {
-
+    return 0;
 }
 
 void delete_hashset(hashset *hs)
