@@ -31,6 +31,7 @@ const uint32_t prime_sizes[20] = {
 
 uint32_t upper_prime(uint32_t n) {
     int l = 0, r = 20;
+    n += n / 3; // add some margin in order to avoid high-loaded table when n is very close to prime
     while (l < r) {
         int d = (l + r) / 2;
         if (prime_sizes[d] <= n) {
