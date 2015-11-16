@@ -1,11 +1,17 @@
-#include "dbase.h"
+#include "simple_hashset.h"
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include <errno.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+
+#define MIN_CHAR 32
+#define MAX_CHAR 127
 
 #define CATCH_ERR(a) if ((a) == -1) {          \
         perror("Error");                       \

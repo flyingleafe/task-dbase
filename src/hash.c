@@ -1,4 +1,5 @@
-#include "dbase.h"
+#include <stdint.h>
+#include <sys/types.h>
 
 #define FNV_PRIME 16777619
 #define FNV_OFFSET 2166136261
