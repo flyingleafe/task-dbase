@@ -3,6 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef DEBUG
+double average_run_len = 0;
+int max_run_len = 0;
+int run_count = 0;
+#endif
+
 // This is a very simple implementation of hash table.
 // There is no resizig and rehashing, as we suppose initial size would be enough
 
@@ -31,7 +37,7 @@ const uint32_t prime_sizes[20] = {
 
 uint32_t upper_prime(uint32_t n) {
     int l = 0, r = 20;
-    n += n / 3; // add some margin in order to avoid high-loaded table when n is very close to prime
+    n += n >> 1; // add some margin in order to avoid high-loaded table when n is very close to prime
     while (l < r) {
         int d = (l + r) / 2;
         if (prime_sizes[d] <= n) {
@@ -63,9 +69,21 @@ void delete_simple_hashset(simple_hashset *hs)
 uint32_t find_slot(simple_hashset *hs, const char *buf, size_t len)
 {
     uint32_t idx = hash(buf, len, hs->seed) % hs->size;
+#ifdef DEBUG
+    int idx1 = idx;
+    run_count++;
+#endif
     while (hs->table[idx].len && !str_equal(&hs->table[idx], buf, len)) {
         idx = (idx + 1) % hs->size;
     }
+#ifdef DEBUG
+    int run_len = idx1 <= idx ? idx - idx1 + 1 : hs->size - idx1 + idx + 1;
+    if (run_len > max_run_len) {
+        max_run_len = run_len;
+    }
+    average_run_len = average_run_len * (run_count - 1) / run_count;
+    average_run_len += (double) run_len / run_count;
+#endif
     return idx;
 }
 

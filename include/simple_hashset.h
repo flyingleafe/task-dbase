@@ -4,6 +4,12 @@
 #include <stdint.h>
 #include "flf_string.h"
 
+#ifdef DEBUG
+double average_run_len;
+int max_run_len;
+int run_count;
+#endif
+
 struct simple_hashset {
     uint32_t size;
     uint32_t seed;

@@ -9,8 +9,12 @@ SOURCES=$(wildcard $(SOURCEDIR)/*.c)
 OBJECTS=$(patsubst $(SOURCEDIR)/%.c,$(BUILDDIR)/%.o,$(SOURCES))
 
 
-.PHONY: all clean builddir
+.PHONY: all clean builddir debug
+
 all: builddir $(BUILDDIR)/$(EXECUTABLE) link
+
+debug: CFLAGS += -DDEBUG -g
+debug: all
 
 builddir:
 	mkdir -p $(BUILDDIR)

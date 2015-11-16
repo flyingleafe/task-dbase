@@ -1,8 +1,6 @@
+#include "hash.h"
 #include <stdint.h>
 #include <sys/types.h>
-
-#define FNV_PRIME 16777619
-#define FNV_OFFSET 2166136261
 
 __attribute__((always_inline))
 inline uint32_t fnv_step(uint32_t hsh, uint32_t val)

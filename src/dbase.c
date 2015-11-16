@@ -1,4 +1,5 @@
 #include "simple_hashset.h"
+#include "hash.h"
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -9,6 +10,10 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+
+#ifdef DEBUG
+#include <time.h>
+#endif
 
 #define MIN_CHAR 32
 #define MAX_CHAR 127
@@ -118,13 +123,13 @@ int main (int argc, char * argv [])
     }
     maxN = min(maxN, words);
 
-    /* hashset hs; */
-    /* CATCH_ERR(new_hashset(&hs, maxN)); */
-    /* CATCH_ERR(generate_perfect_hash(hs, file, fsize, maxN)); */
+#ifdef DEBUG
+    fprintf(stderr, "words: %zu, minw: %zu, maxw: %zu, maxN: %zu\n", words, minw, maxw, maxN);
+    clock_t hashset_init_start = clock();
+#endif
 
-    // temporary
     simple_hashset hs;
-    CATCH_ERR(new_simple_hashset(&hs, maxN, 2166136261));
+    CATCH_ERR(new_simple_hashset(&hs, maxN, FNV_OFFSET));
 
     const char *strp = file;
     uint32_t cur_len = 0;
@@ -143,6 +148,12 @@ int main (int argc, char * argv [])
     if (cur_len) {
         sh_insert(&hs, strp, cur_len);
     }
+
+#ifdef DEBUG
+    clock_t work_start = clock();
+    fprintf(stderr, "time for initialization: %Lf sec\n", (long double) (work_start - hashset_init_start) / CLOCKS_PER_SEC);
+#endif
+
     char *query = NULL;
     size_t buflen = 0;
     while (1) {
@@ -177,6 +188,13 @@ int main (int argc, char * argv [])
             printf("NO\n");
         }
     }
+
+#ifdef DEBUG
+    clock_t exit_time = clock();
+    fprintf(stderr, "working time: %Lf sec\n", (long double) (exit_time - work_start) / CLOCKS_PER_SEC);
+    fprintf(stderr, "avg. run length: %f\nmax run length: %d\n", average_run_len, max_run_len);
+#endif
+
     free(query);
     delete_simple_hashset(&hs);
     close(fd);
